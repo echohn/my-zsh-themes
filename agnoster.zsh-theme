@@ -170,7 +170,7 @@ prompt_hg() {
 prompt_dir() {
   home=$(echo $HOME |sed 's/\//\\\//g')
   curr_dir=$(echo $PWD |sed 's/'$home'/~/g')
-  echo $curr_dir |awk -F/ '{if(NF > 3){print "...";for(i=NF-1;i<=NF;i++){print $i}}else{for(i=1;i<=NF;i++){print $i}}}' |while read i
+  echo $curr_dir |awk -F/ '{if($0 == "/"){print $0} else if(NF > 3){print "...";for(i=NF-1;i<=NF;i++){print $i}}else{for(i=1;i<=NF;i++){if($i != "")print $i}}}' |while read i
   do
     prompt_segment blue black "$i"
   done
