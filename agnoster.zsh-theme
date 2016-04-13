@@ -45,25 +45,30 @@ CURRENT_BG='NONE'
   # escape sequence with a single literal character.
   # Do not change this! Do not make it '\u2b80'; that is the old, wrong code point.
   SEGMENT_SEPARATOR=$'\ue0b0'
+  SEGMENT_SEPARATOR_INSIDE=$'\ue0b1'
+
 }
 
 # Begin a segment
 # Takes two arguments, background and foreground. Both can be omitted,
 # rendering default background/foreground.
+
 prompt_segment() {
   local bg fg
   [[ -n $1 ]] && bg="%K{$1}" || bg="%k"
   [[ -n $2 ]] && fg="%F{$2}" || fg="%f"
-  # if [[ $CURRENT_BG != 'NONE' && $1 != $CURRENT_BG ]]; then
-  if [[ $CURRENT_BG != 'NONE' ]]; then
-
+  if [[ $CURRENT_BG != 'NONE' && $1 != $CURRENT_BG ]]; then
     echo -n " %{$bg%F{$CURRENT_BG}%}$SEGMENT_SEPARATOR%{$fg%} "
+  elif [[ $CURRENT_BG != 'NONE' ]]; then
+    echo -n " %{$bg%F{yellow}%}$SEGMENT_SEPARATOR_INSIDE%{$fg%} "
+
   else
     echo -n "%{$bg%}%{$fg%} "
   fi
   CURRENT_BG=$1
   [[ -n $3 ]] && echo -n $3
 }
+
 
 # End the prompt, closing any open segments
 prompt_end() {
@@ -83,7 +88,7 @@ prompt_end() {
 prompt_context() {
   if [[ "$USER" != "$DEFAULT_USER" || -n "$SSH_CLIENT" ]]; then
     # prompt_segment yellow black "%(!.%{%F{yellow}%}.)$USER@%m"
-    prompt_segment magenta black "%(!.%{%F{yellow}%}.)$USER"
+    prompt_segment green black "%(!.%{%F{yellow}%}.)$USER"
 
   fi
 }
